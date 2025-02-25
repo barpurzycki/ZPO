@@ -93,8 +93,31 @@ class Product:
 
 Product1 = Product("Mleko", 5, "Nabial")
 Product2 = Product("Maslo", 100)
-Product3 = Product("Ser", 0)
+Product3 = Product("Ser", -1)
 
 print(Product1)
 print(Product2)
 print(Product3)
+
+#Zadanie 5.
+
+class Car:
+    brand: str
+    model: str
+    year: int
+
+    def __init__(self, brand: str, model: str, year: int):
+        self.brand = brand
+        self.model = model
+        self.year = year
+
+    def is_classic(self):
+        if((2025 - self.year) > 25):
+            return True
+        else:
+            return False
+
+car1 = Car("Toyota", "Supra MK4", 1993)
+print(car1.is_classic())
+car2 = Car("BMW", "Jakies takie nowe", 2021)
+print(car2.is_classic())
