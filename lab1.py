@@ -68,7 +68,7 @@ class Book:
     year: int
     price: float
 
-    def apply_discount(self, discount: int):
+    def apply_discount(self, discount: int) -> None:
         return self.price - (self.price * (discount / 100))
 
 Book = Book("Pani Jeziora", "Andrzej Sapkowski", 1999, 60)
@@ -77,5 +77,24 @@ print(Book.apply_discount(50))
 
 #Zadanie 4.
 
+#Stworzyć klasę Product jako dataclass zawierającą name, price, category,
+# a następnie rozszerz ją o walidację ceny (powinna być większa od zera)
+# oraz domyślną wartość category="General".
 
+@dataclass(frozen=True)
+class Product:
+    name: str
+    price: float
+    category: str = field(default="General")
 
+    def validation(self, price: float) -> None:
+        if price <= 0:
+            raise ValueError("Price should be higher than 0.")
+
+Product1 = Product("Mleko", 5, "Nabial")
+Product2 = Product("Maslo", 100)
+Product3 = Product("Ser", 0)
+
+print(Product1)
+print(Product2)
+print(Product3)
