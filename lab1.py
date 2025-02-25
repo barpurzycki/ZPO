@@ -121,3 +121,11 @@ car1 = Car("Toyota", "Supra MK4", 1993)
 print(car1.is_classic())
 car2 = Car("BMW", "Jakies takie nowe", 2021)
 print(car2.is_classic())
+
+#Zadanie 6.
+
+class ElectricVehicle:
+    fuel_type: str
+
+class GasolineVehicle:
+    fuel_type: str
