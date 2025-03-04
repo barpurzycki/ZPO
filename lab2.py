@@ -75,3 +75,38 @@ class Computer:
     self.GPU = GPU
     self.Motherboard = Motherboard
     self.Charger = Charger
+
+class Computer:
+  def __init__(self) -> None:
+    self.RAM = None
+    self.CPU = None
+    self.GPU = None
+    self.Motherboard = None
+    self.Charger = None
+
+class ComputerBuilder:
+  @abstractmethod
+  def add_ram(self):
+    pass
+  @abstractmethod
+  def add_cpu(self):
+    pass
+  @abstractmethod
+  def add_gpu(self):
+    pass
+  @abstractmethod
+  def add_motherboard(self):
+    pass
+  @abstractmethod
+  def add_charger(self):
+    pass
+
+class Director:
+  def construct(self, builder):
+    builder.add_ram()
+    builder.add_cpu()
+    builder.add_gpu()
+    builder.add_motherboard()
+    builder.add_charger()
+    return builder
+
