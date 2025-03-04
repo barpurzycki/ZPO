@@ -125,7 +125,160 @@ print(car2.is_classic())
 #Zadanie 6.
 
 class ElectricVehicle:
-    fuel_type: str
+    def fuel_type(self):
+        return "electric"
 
 class GasolineVehicle:
-    fuel_type: str
+    def fuel_type(self):
+        return "gasoline"
+
+class HybridVehicle(ElectricVehicle, GasolineVehicle):
+    def fuel_type(self):
+        return "hybrid"
+
+ev = ElectricVehicle()
+gv = GasolineVehicle()
+hv = HybridVehicle()
+
+print(ev.fuel_type())
+print(gv.fuel_type())
+print(hv.fuel_type())
+
+#Zadanie 7.
+
+class Person:
+    def introduce(self):
+        return "I am person."
+
+class Worker:
+    def introduce(self):
+        return "I am worker."
+
+class Student:
+    def introduce(self):
+        return "I am student."
+
+class WorkingStudent(Worker, Student):
+    pass
+
+
+person = Person()
+worker = Worker()
+student = Student()
+ws = WorkingStudent()
+
+print(person.introduce())
+print(worker.introduce())
+print(student.introduce())
+print(ws.introduce())
+
+#Zadanie 8.
+
+class Animal:
+    def make_sound(self):
+        return "Some sound."
+
+class Pet:
+    def is_domestic(self):
+        return True
+
+class Dog(Animal, Pet):
+    def make_sound(self):
+        return "Woof, woof."
+
+animal = Animal()
+pet = Pet()
+dog = Dog()
+
+print(animal.make_sound())
+print(pet.is_domestic())
+print(dog.make_sound())
+print(dog.is_domestic())
+
+#Zadanie 9.
+
+class FlyingVehicle:
+    def move(self):
+        return "I fly."
+
+class WaterVehicle:
+    def move(self):
+        return "I sail."
+
+class AmphibiousVehicle(FlyingVehicle, WaterVehicle):
+    def __init__(self):
+        self.mode = "flying"
+
+    def set_mode(self, mode):
+        if mode in ["flying", "water"]:
+            self.mode = mode
+        else:
+            print("Invalid mode.")
+
+    def move(self):
+        if self.mode == "flying":
+            return FlyingVehicle.move(self)
+        if self.mode == "water":
+            return WaterVehicle.move(self)
+
+fv = FlyingVehicle()
+wv = WaterVehicle()
+av = AmphibiousVehicle()
+
+print(fv.move())
+print(wv.move())
+print(av.move())
+
+av.set_mode("water")
+print(av.move())
+
+av.set_mode("drive")
+print(av.move())
+
+#Zadanie 10.
+
+class Robot:
+    def operate(self):
+        return "Performing task."
+
+class AI:
+    def think(self):
+        return "Processing data."
+
+class Android(Robot, AI):
+    def self_learn(self):
+        return "Learning."
+
+robot = Robot()
+ai = AI()
+android = Android()
+
+print(robot.operate())
+print(ai.think())
+print(android.operate())
+print(android.think())
+print(android.self_learn())
+
+#Zadanie 11.
+
+class TemperatureConverter:
+    @staticmethod
+    def celsius_to_fahrenheit(celsius):
+        return (celsius * 9/5) +32
+
+    @staticmethod
+    def fahrenheit_to_celsius(fahrenheit):
+        return (fahrenheit -32) * 5/9
+
+celsius = 20
+fahrenheit = TemperatureConverter.celsius_to_fahrenheit(celsius)
+print(fahrenheit)
+
+fahrenheit2 = 68
+celsius2 = TemperatureConverter.fahrenheit_to_celsius(fahrenheit2)
+print(celsius2)
+
+#Zadanie 12.
+
+class IDGenerator:
+    def generate_id(self):
