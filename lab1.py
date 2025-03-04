@@ -281,4 +281,39 @@ print(celsius2)
 #Zadanie 12.
 
 class IDGenerator:
-    def generate_id(self):
+    id = 0
+
+    def __init__(self):
+        IDGenerator.id += 1
+        self.id = IDGenerator.id
+
+    @classmethod
+    def generate_id(cls) -> int:
+        return cls.id
+
+id1 = IDGenerator()
+id2 = IDGenerator()
+id3 = IDGenerator()
+
+print(id1.id)
+print(id2.id)
+print(id3.id)
+
+#Zadanie 13.
+
+class Store:
+    total_customers = 0
+
+    def add_customer(self):
+        Store.total_customers += 1
+
+    @classmethod
+    def get_total_cutomers(cls):
+        return cls.total_customers
+
+store1 = Store()
+store1.add_customer()
+store1.add_customer()
+
+print(f"Customers: {store1.get_total_cutomers()}")
+
