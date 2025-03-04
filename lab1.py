@@ -1,5 +1,7 @@
 from collections import namedtuple
 from dataclasses import dataclass, field
+from abc import ABC, abstractmethod
+import math
 
 #Zadanie 1.
 class Employee:
@@ -317,3 +319,204 @@ store1.add_customer()
 
 print(f"Customers: {store1.get_total_cutomers()}")
 
+#Zadanie 14.
+
+class MathOperations:
+    @staticmethod
+    def add(a, b):
+        return a + b
+
+    @staticmethod
+    def multiply(a, b):
+        return a * b
+
+    @classmethod
+    def identity_matrix(cls, size):
+        return [[1 if i == j else 0 for j in range(size)] for i in range(size)]
+
+math_add = MathOperations.add(4, 2)
+math_multiply = MathOperations.multiply(4, 2)
+math_matrix = MathOperations.identity_matrix(3)
+
+print(math_add)
+print(math_multiply)
+for i in math_matrix:
+    print(i)
+
+#Zadanie 15.
+
+class GameCharacter:
+    default_health = 100
+
+    def __init__(self) -> None:
+        self.health = GameCharacter.default_health
+
+    def restore_health(self):
+        self.health = GameCharacter.default_health
+
+    @classmethod
+    def set_default_health(cls, new_health):
+        cls.default_health = new_health
+
+character1 = GameCharacter()
+character2 = GameCharacter()
+
+print(character1.health)
+print(character2.health)
+
+character1.health = 50
+print(character1.health)
+character1.restore_health()
+print(character1.health)
+
+GameCharacter.default_health = 200
+character3 = GameCharacter()
+print(character3.health)
+
+#Zadanie 16.
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self) -> None:
+        pass
+
+class Circle(Shape):
+    radius: int
+
+    def __init__(self, radius: int) -> None:
+        self.radius = radius
+
+    def area(self):
+        return math.pi * (self.radius ** 2)
+
+class Rectangle(Shape):
+    a: int
+    b: int
+
+    def __init__(self, a: int, b: int) -> None:
+        self.a = a
+        self.b = b
+
+    def area(self):
+        return self.a * self.b
+
+circle = Circle(10)
+rectangle= Rectangle(5, 3)
+
+print(circle.area())
+print(rectangle.area())
+
+class PaymentProcessor(ABC):
+    @abstractmethod
+    def authorize_payment(self, amount: float) -> str:
+        pass
+
+    @abstractmethod
+    def capture_payment(self, amount: float) -> str:
+        pass
+
+class CreditCardPayment(PaymentProcessor):
+    def authorize_payment(self, amount: float) -> str:
+        return f"Oplacono karta kredytowa, ilosc: {amount}."
+
+    def capture_payment(self, amount: float) -> str:
+        return f"Przyjeto wplate karta kredytowa, ilosc: {amount}."
+
+
+class PayPalPayment(PaymentProcessor):
+    def authorize_payment(self, amount: float) -> str:
+        return f"Oplacono PayPal, ilosc: {amount}."
+
+    def capture_payment(self, amount: float) -> str:
+        return f"Przyjeto wplate PayPal, ilosc: {amount}."
+
+creditcard = CreditCardPayment()
+paypal = PayPalPayment()
+
+print(creditcard.authorize_payment(100))
+print(creditcard.capture_payment(100))
+
+print(paypal.authorize_payment(200))
+print(paypal.capture_payment(200))
+
+#Zadanie 18.
+
+class VehicleABC(ABC):
+    @abstractmethod
+    def max_speed(self) -> int:
+        pass
+
+class CarABC(VehicleABC):
+    def __init__(self, speed: int) -> None:
+        self.speed = speed
+
+    def max_speed(self) -> int:
+        return self.speed
+
+class BicycleABC(VehicleABC):
+    def __init__(self, speed: int) -> None:
+        self.speed = speed
+
+    def max_speed(self) -> int:
+        return self.speed
+
+carabc = CarABC(220)
+bicycleabc = BicycleABC(35)
+
+print(carabc.max_speed())
+print(bicycleabc.max_speed())
+
+#Zadanie 19.
+
+class DatabaseConnection(ABC):
+    @abstractmethod
+    def connect(self) -> None:
+        pass
+
+    @abstractmethod
+    def execute_query(self, query: str) -> str:
+        pass
+
+class MySQLConnection(DatabaseConnection):
+    def connect(self) -> None:
+        return "Connected to MySQL Database."
+
+    def execute_query(self, query: str) -> str:
+        return f"Execute MySQL Query: {query}."
+
+class PostgresSQLConnection(DatabaseConnection):
+    def connect(self) -> None:
+        return "Connected to PostgresSQL Database."
+
+    def execute_query(self, query: str) -> str:
+        return f"Execute PostgresSQL Query: {query}."
+
+mysql = MySQLConnection()
+postgres = PostgresSQLConnection()
+
+print(mysql.connect())
+print(postgres.connect())
+
+print(mysql.execute_query("Select * FROM table1;"))
+print(postgres.execute_query("Select * FROM table2;"))
+
+#Zadanie 20.
+
+class Instrument(ABC):
+    @abstractmethod
+    def play(self) -> str:
+        pass
+
+class Piano(Instrument):
+    def play(self) -> str:
+        print("Granie na pianinku.")
+
+class Guitar(Instrument):
+    def play(self) -> str:
+        print("Granie na gitarce.")
+
+piano = Piano()
+guitar = Guitar()
+
+piano.play()
+guitar.play()
