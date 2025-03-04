@@ -110,3 +110,39 @@ class Director:
     builder.add_charger()
     return builder
 
+#Zadanie 2.
+
+class Document(ABC):
+  @abstractmethod
+  def get_type(self) -> str:
+    pass
+
+class DocumentFactory(ABC):
+  @abstractmethod
+  def create_doc(self) -> Document:
+    pass
+
+class WordDocument(Document):
+  def get_type(self) -> str:
+    return "doc"
+
+class PDFDocument(Document):
+  def get_type(self) -> str:
+    return "pdf"
+
+class WordDocumentFactory(DocumentFactory):
+  def create_doc(self) -> Document:
+    return WordDocument()
+
+class PDFDocumentFactory(DocumentFactory):
+  def create_doc(self) -> Document:
+    return PDFDocument()
+
+word_factory = WordDocumentFactory()
+pdf_factory = PDFDocumentFactory()
+
+word = word_factory.create_doc()
+pdf = pdf_factory.create_doc()
+
+print(word.get_type())
+print(pdf.get_type())
