@@ -3,64 +3,100 @@ from abc import ABC, abstractmethod
 #Zadanie 1.
 
 class Pizza:
-  def __init__(self) -> None:
-    self.cheese = None
-    self.ham = None
-    self.salami = None
-    self.onion = None
-    self.mushroom = None
+    def __init__(self) -> None:
+        self.ingredients = []
 
-class PizzaBuilder:
-  @abstractmethod
-  def add_cheese(self):
-    pass
-  @abstractmethod
-  def add_ham(self):
-    pass
-  @abstractmethod
-  def add_salami(self):
-    pass
-  @abstractmethod
-  def add_onion(self):
-    pass
-  @abstractmethod
-  def add_mushroom(self):
-    pass
+    def add_ingredient(self, ingredient: str):
+        self.ingredients.append(ingredient)
+
+    def __str__(self):
+        return f"Ingredients: {self.ingredients}"
+
+class PizzaBuilder(ABC):
+
+    def __init__(self) -> None:
+        self.pizza = Pizza()
+
+    @abstractmethod
+    def add_cheese(self):
+        pass
+
+    @abstractmethod
+    def add_ham(self):
+        pass
+
+    @abstractmethod
+    def add_salami(self):
+        pass
+
+    @abstractmethod
+    def add_onion(self):
+        pass
+
+    @abstractmethod
+    def add_mushroom(self):
+        pass
+
+    def get_pizza(self) -> Pizza:
+        return self.pizza
 
 class VegetarianPizzaBuilder(PizzaBuilder):
-  @abstractmethod
-  def add_cheese(self):
-    pass
-  @abstractmethod
-  def add_onion(self):
-    pass
-  @abstractmethod
-  def add_mushroom(self):
-    pass
+
+    def add_cheese(self):
+        self.pizza.add_ingredient("Ser")
+
+    def add_onion(self):
+        self.pizza.add_ingredient("Cebula")
+
+    def add_mushroom(self):
+        self.pizza.add_ingredient("Pieczarki")
+
+    def add_ham(self):
+        pass
+
+    def add_salami(self):
+        pass
 
 class MeatPizzaBuilder(PizzaBuilder):
-  @abstractmethod
-  def add_cheese(self):
-    pass
-  @abstractmethod
-  def add_ham(self):
-    pass
-  @abstractmethod
-  def add_salami(self):
-    pass
+
+    def add_cheese(self):
+        self.pizza.add_ingredient("Ser")
+
+    def add_ham(self):
+        self.pizza.add_ingredient("Szynka")
+
+    def add_salami(self):
+        self.pizza.add_ingredient("Salami")
+
+    def add_onion(self):
+        pass
+
+    def add_mushroom(self):
+        pass
 
 class Director:
-  def construct(self, builder):
-    builder.add_cheese()
-    builder.add_ham()
-    builder.add_salami()
-    builder.add_onion()
-    builder.add_mushroom()
-    return builder
+    def construct_vege(self, builder: PizzaBuilder):
+        builder.add_cheese()
+        builder.add_onion()
+        builder.add_mushroom()
+        return builder.get_pizza()
 
-vegepizza = VegetarianPizzaBuilder()
+    def construct_meat(self, builder: PizzaBuilder):
+        builder.add_cheese()
+        builder.add_ham()
+        builder.add_salami()
+        return builder.get_pizza()
+
 director = Director()
-pizza = director.construct(vegepizza)
+vege_builder = VegetarianPizzaBuilder()
+vege_pizza = director.construct_vege(vege_builder)
+
+print(vege_pizza)
+
+meat_builder = MeatPizzaBuilder()
+meat_pizza = director.construct_meat(meat_builder)
+
+print(meat_pizza)
 
 class Computer:
   RAM: str
@@ -77,38 +113,48 @@ class Computer:
     self.Charger = Charger
 
 class Computer:
-  def __init__(self) -> None:
-    self.RAM = None
-    self.CPU = None
-    self.GPU = None
-    self.Motherboard = None
-    self.Charger = None
+    def __init__(self) -> None:
+        self.RAM = None
+        self.CPU = None
+        self.GPU = None
+        self.Motherboard = None
+        self.Charger = None
 
-class ComputerBuilder:
-  @abstractmethod
-  def add_ram(self):
-    pass
-  @abstractmethod
-  def add_cpu(self):
-    pass
-  @abstractmethod
-  def add_gpu(self):
-    pass
-  @abstractmethod
-  def add_motherboard(self):
-    pass
-  @abstractmethod
-  def add_charger(self):
-    pass
+class ComputerBuilder(ABC):
+    def __init__(self) -> None:
+        self.computer = Computer()
+
+    @abstractmethod
+    def add_ram(self):
+        pass
+
+    @abstractmethod
+    def add_cpu(self):
+        pass
+
+    @abstractmethod
+    def add_gpu(self):
+        pass
+
+    @abstractmethod
+    def add_motherboard(self):
+        pass
+
+    @abstractmethod
+    def add_charger(self):
+        pass
+
+    def get_computer(self) -> Computer:
+        return self.computer
 
 class Director:
-  def construct(self, builder):
-    builder.add_ram()
-    builder.add_cpu()
-    builder.add_gpu()
-    builder.add_motherboard()
-    builder.add_charger()
-    return builder
+    def construct(self, builder: ComputerBuilder):
+        builder.add_ram()
+        builder.add_cpu()
+        builder.add_gpu()
+        builder.add_motherboard()
+        builder.add_charger()
+        return builder.get_computer()
 
 #Zadanie 2.
 
