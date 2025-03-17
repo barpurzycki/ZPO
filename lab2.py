@@ -169,40 +169,36 @@ class Document(ABC):
     def get_type(self) -> str:
         pass
 
-class DocumentFactory(ABC):
-    @abstractmethod
-    def create_doc(self) -> Document:
-        pass
-
 class WordDocument(Document):
     def get_type(self) -> str:
-        return "doc"
+        return "docx"
 
 class PDFDocument(Document):
     def get_type(self) -> str:
         return "pdf"
 
-class WordDocumentFactory(DocumentFactory):
-    def create_doc(self) -> Document:
-        return WordDocument()
+class DocumentFactory:
 
-class PDFDocumentFactory(DocumentFactory):
-    def create_doc(self) -> Document:
-        return PDFDocument()
+    def create_doc(self, document_type: str) -> Document:
+        if document_type == "pdf":
+            return PDFDocument()
+        elif document_type == "docx":
+            return WordDocument()
+        else:
+            raise ValueError("Wrong document type.")
 
-word_factory = WordDocumentFactory()
-pdf_factory = PDFDocumentFactory()
-
-word = word_factory.create_doc()
-pdf = pdf_factory.create_doc()
+factory = DocumentFactory()
+word = factory.create_doc("docx")
+pdf = factory.create_doc("pdf")
+#other_type = factory.create_doc("txt")
 
 print(word.get_type())
 print(pdf.get_type())
+#print(other_type.get_type())
 
 #Zadanie 2. B
 
 class Animal(ABC):
-
     @abstractmethod
     def get_type(self) -> str:
         pass
@@ -217,7 +213,7 @@ class Dog(Animal):
 
 class AnimalFactory:
 
-    def create_animal(animal) -> Animal:
+    def create_animal(self, animal) -> Animal:
         if animal == "Cat":
             return Cat()
         if animal == "Dog":
@@ -225,11 +221,12 @@ class AnimalFactory:
         else:
             raise ValueError(animal)
 
-animal = AnimalFactory.create_animal("Cat")
+animal_factory = AnimalFactory()
+animal = animal_factory.create_animal("Cat")
 print(animal.get_type())
 
-animal2 = AnimalFactory.create_animal("Dog")
+animal2 = animal_factory.create_animal("Dog")
 print(animal2.get_type())
 
-animal3 = AnimalFactory.create_animal("Parrot")
-print(animal3.get_type())
+#animal3 = AnimalFactory.create_animal("Parrot")
+#print(animal3.get_type())
