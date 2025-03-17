@@ -303,8 +303,18 @@ AnimalFactoryC.register_animal("Cat", CatC)
 
 dog1 = AnimalFactoryC.create_animal("Dog")
 cat1 = AnimalFactoryC.create_animal("Cat")
-#parrot1 = AnimalFactoryC.create_animal("Parrot")
+#parrot = AnimalFactoryC.create_animal("Parrot")
 
 print(f'Podpunkt C przykład: {dog1.get_type()}')
 print(f'Podpunkt C przykład: {cat1.get_type()}')
-#print(f'Podpunkt C przykład: {parrot1.get_type()}')
+#print(f'Podpunkt C przykład: {parrot.get_type()}')
+
+class ParrotC(AnimalC):
+    def get_type(self) -> str:
+        return "Parrot"
+
+AnimalFactoryC.register_animal("Parrot", ParrotC)
+
+parrot1 = AnimalFactoryC.create_animal("Parrot")
+
+print(f'Podpunkt C przykład: {parrot1.get_type()}')
