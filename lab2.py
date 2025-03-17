@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field, asdict
+from typing import Any
 
 #Zadanie 1.
+
+print("=========== Zadanie 1 ===========")
 
 class Pizza:
     def __init__(self) -> None:
@@ -98,7 +102,7 @@ meat_pizza = director.construct_meat(meat_builder)
 
 print(meat_pizza)
 
-#Zadanie 2.
+#Zadanie 1. C
 
 #Klasa Computer
 
@@ -161,6 +165,8 @@ class Director:
         builder.add_motherboard()
         builder.add_charger()
         return builder.get_computer()
+
+print("=========== Zadanie 2 ===========")
 
 #Zadanie 2. A
 
@@ -318,3 +324,97 @@ AnimalFactoryC.register_animal("Parrot", ParrotC)
 parrot1 = AnimalFactoryC.create_animal("Parrot")
 
 print(f'Podpunkt C przykład: {parrot1.get_type()}')
+
+#Zadanie 3.
+
+print("=========== Zadanie 3 ===========")
+
+class Car(ABC):
+    @abstractmethod
+    def get_info(self):
+        pass
+
+class TeslaSedan(Car):
+    def get_info(self) -> str:
+        return "Tesla Sedan"
+
+class TeslaSUV(Car):
+    def get_info(self) -> str:
+        return "Tesla SUV"
+
+class TeslaHatchback(Car):
+    def get_info(self):
+        return "Tesla Hatchback"
+
+class BMWSedan(Car):
+    def get_info(self) -> str:
+        return "BMW Sedan"
+
+class BMWSUV(Car):
+    def get_info(self) -> str:
+        return "BMW SUV"
+
+class BMWHatchback(Car):
+    def get_info(self):
+        return "BMW Hatchback"
+
+class CarFactory(ABC):
+    @abstractmethod
+    def create_sedan(self):
+        pass
+
+    @abstractmethod
+    def create_suv(self):
+        pass
+
+    @abstractmethod
+    def create_hatchback(self):
+        pass
+
+class TeslaFactory(CarFactory):
+    def create_sedan(self) -> Car:
+        return TeslaSedan()
+
+    def create_suv(self) -> Car:
+        return TeslaSUV()
+
+    def create_hatchback(self) -> Car:
+        return TeslaHatchback()
+
+class BMWFactory(CarFactory):
+    def create_sedan(self) -> Car:
+        return BMWSedan()
+
+    def create_suv(self) -> Car:
+        return BMWSUV()
+
+    def create_hatchback(self) -> Car:
+        return BMWHatchback()
+
+class AbstractFactory:
+    @staticmethod
+    def get_factory(model: str) -> CarFactory:
+        if model == "Tesla":
+            return TeslaFactory()
+        elif model == "BMW":
+            return BMWFactory()
+        else:
+            raise ValueError("Incorrect car brand")
+
+class Client:
+    def __init__(self, brand: str) -> None:
+        self.factory = AbstractFactory.get_factory(brand)
+        self.sedan = self.factory.create_sedan()
+        self.suv = self.factory.create_suv()
+        self.hatchback = self.factory.create_hatchback()
+
+    def show_info(self):
+        print(f'Sedan: {self.sedan.get_info()}')
+        print(f'SUV: {self.suv.get_info()}')
+        print(f'Hatchback: {self.hatchback.get_info()}')
+
+client = Client("Tesla")
+client.show_info()
+
+client1 = Client("BMW")
+client1.show_info()
