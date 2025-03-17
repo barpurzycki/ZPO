@@ -230,3 +230,81 @@ print(animal2.get_type())
 
 #animal3 = AnimalFactory.create_animal("Parrot")
 #print(animal3.get_type())
+
+#Zadanie 2. C
+
+class DocumentC(ABC):
+    @abstractmethod
+    def get_type(self) -> str:
+        pass
+
+class WordDocumentC(Document):
+    def get_type(self) -> str:
+        return "docx"
+
+class PDFDocumentC(Document):
+    def get_type(self) -> str:
+        return "pdf"
+
+class DocumentFactoryC:
+    _documentdict = {}
+
+    @classmethod
+    def register_doc(cls, doc_type: str, doc_class):
+        cls._documentdict[doc_type] = doc_class
+
+    @classmethod
+    def create_doc(cls, doc_type: str) -> DocumentC:
+        if doc_type in cls._documentdict:
+            return cls._documentdict[doc_type]()
+        else:
+            raise ValueError("Wrong document type.")
+
+DocumentFactoryC.register_doc("docx", WordDocumentC)
+DocumentFactoryC.register_doc("pdf", PDFDocumentC)
+
+word1 = DocumentFactoryC.create_doc("docx")
+pdf1 = DocumentFactoryC.create_doc("pdf")
+#txt1 = DocumentFactoryC.create_doc("txt")
+
+print(f'Podpunkt C przykład: {word1.get_type()}')
+print(f'Podpunkt C przykład: {pdf1.get_type()}')
+#print(f'Podpunkt C przykład: {txt1.get_type()}')
+
+class AnimalC(ABC):
+    @abstractmethod
+    def get_type(self) -> str:
+        pass
+
+class CatC(Animal):
+    def get_type(self) -> str:
+        return "Cat"
+
+class DogC(Animal):
+    def get_type(self) -> str:
+        return "Dog"
+
+class AnimalFactoryC:
+    _animaldict = {}
+
+    @classmethod
+    def register_animal(cls, animal_type: str, animal_class):
+        cls._animaldict[animal_type] = animal_class
+
+    @classmethod
+    def create_animal(cls, animal_type: str) -> AnimalC:
+        if animal_type in cls._animaldict:
+            return cls._animaldict[animal_type]()
+        else:
+            raise ValueError("Wrong animal type.")
+
+AnimalFactoryC.register_animal("Dog", DogC)
+AnimalFactoryC.register_animal("Cat", CatC)
+
+dog1 = AnimalFactoryC.create_animal("Dog")
+cat1 = AnimalFactoryC.create_animal("Cat")
+#parrot1 = AnimalFactoryC.create_animal("Parrot")
+
+print(f'Podpunkt C przykład: {dog1.get_type()}')
+print(f'Podpunkt C przykład: {cat1.get_type()}')
+#print(f'Podpunkt C przykład: {parrot1.get_type()}')
