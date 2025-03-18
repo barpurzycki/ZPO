@@ -418,3 +418,115 @@ client.show_info()
 
 client1 = Client("BMW")
 client1.show_info()
+
+#Zadanie 3. C
+
+@dataclass
+class Model:
+    model: str
+
+@dataclass
+class CPU:
+    cpu_name: str
+
+@dataclass
+class Memory:
+    capacity: int
+
+class Factory(ABC):
+    @abstractmethod
+    def produce_model(self, model: str) -> Model:
+        pass
+
+    @abstractmethod
+    def produce_cpu(self, cpu_name: str) -> CPU:
+        pass
+
+    @abstractmethod
+    def produce_memory(self, capacity: int) -> Memory:
+        pass
+
+class ApfelFactory(Factory):
+    def produce_model(self, model: str) -> Model:
+        return Model(model = model)
+
+    def produce_cpu(self, cpu_name: str) -> CPU:
+        return CPU(cpu_name = cpu_name)
+
+    def produce_memory(self, capacity: int) -> Memory:
+        return Memory(capacity = capacity)
+
+class SzajsungFactory(Factory):
+    def produce_model(self, model: str) -> Model:
+        return Model(model = model)
+
+    def produce_cpu(self, cpu_name: str) -> CPU:
+        return CPU(cpu_name = cpu_name)
+
+    def produce_memory(self, capacity: int) -> Memory:
+        return Memory(capacity = capacity)
+
+class MajFonFactory(Factory):
+    def produce_model(self, model: str) -> Model:
+        return Model(model = model)
+
+    def produce_cpu(self, cpu_name: str) -> CPU:
+        return CPU(cpu_name = cpu_name)
+
+    def produce_memory(self, capacity: int) -> Memory:
+        return Memory(capacity = capacity)
+
+class AbstractFactoryPhone:
+    @staticmethod
+    def get_factory(brand: Any) -> Any:
+        if brand == "Apfel":
+            return ApfelFactory()
+        elif brand == "Szajsung":
+            return SzajsungFactory()
+        elif brand == "MajFon":
+            return MajFonFactory()
+        else:
+            raise ValueError("Wrong phone brand")
+
+@dataclass
+class Phone:
+    model: Model
+    cpu_name: CPU
+    memory: Memory
+
+class PhoneManufacturer(ABC):
+    client_options: dict
+
+    def __init__(self, client_options: dict) -> None:
+        self.client_options = client_options
+
+    def produce_phone(self) -> Phone:
+        factory = AbstractFactoryPhone.get_factory(self.client_options["brand"])
+        model, cpu_name, memory = self._request_parts(factory)
+
+        return Phone(model = model, cpu_name = cpu_name, memory = memory)
+
+    def _request_parts(self, factory: Any) -> tuple:
+        model = factory.produce_model(self.client_options["model"])
+        cpu_name = factory.produce_model(self.client_options["cpu_name"])
+        memory = factory.produce_model(self.client_options["memory"])
+
+        return model, cpu_name, memory
+
+class Client:
+    @staticmethod
+    def request_phone(request: dict) -> Phone:
+        manufacturer = PhoneManufacturer(request)
+        new_phone = manufacturer.produce_phone()
+
+        return new_phone
+
+phone_specification = {
+    "brand" : "Apfel",
+    "model" : "iPhone 16 Pro",
+    "cpu_name" : "Apple A18 Pro",
+    "memory" : "1000"
+}
+
+client = Client()
+client.request_phone(phone_specification)
