@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, asdict
 from typing import Any
+from copy import deepcopy, copy
 
 #Zadanie 1.
 
@@ -530,3 +531,145 @@ phone_specification = {
 
 client = Client()
 client.request_phone(phone_specification)
+
+#Zadanie 4.
+
+class Character:
+    def __init__(self, character_class: str) -> None:
+        self.character_class = character_class
+
+    def __str__(self) -> str:
+        return f"Character class: {self.character_class}."
+
+
+rogue = Character("Rogue")
+print(rogue)
+
+
+class Prototype:
+    def __init__(self) -> None:
+        self.objects = dict()
+
+    def add_prototype(self, id_: int, obj: Any) -> None:
+        self.objects[id_] = obj
+
+    def del_prototype(self, id_: int) -> None:
+        del self.objects[id_]
+
+    def clone(self, id_: int, **kwargs: dict) -> Any:
+        if id_ in self.objects:
+            instance = deepcopy(self.objects[id_])
+
+            for key in kwargs:
+                setattr(instance, key, kwargs[key])
+
+            return instance
+        else:
+            raise ModuleNotFoundError("ID not found!")
+
+prototypes = Prototype()
+prototypes.add_prototype("1", rogue)
+another_character = prototypes.clone("1", character_class="Mage")
+print(another_character)
+prototypes.add_prototype("2", rogue)
+another_character_2 = prototypes.clone("2", character_class="Warrior")
+print(another_character_2)
+
+#Zadanie 4. B
+
+
+class CharacterB:
+    def __init__(self, character_class: str, attributes: dict) -> None:
+        self.character_class = character_class
+        self.attributes = attributes
+
+    def __str__(self) -> str:
+        return f"Character(class={self.character_class}, attributes={self.attributes})"
+
+class PrototypeB:
+    def __init__(self) -> None:
+        self.objects = dict()
+
+    def add_prototype(self, id_: int, obj: Any) -> None:
+        self.objects[id_] = obj
+
+    def del_prototype(self, id_: int) -> None:
+        del self.objects[id_]
+
+    def deep_clone(self, id_: int, **kwargs: dict) -> Any:
+        if id_ in self.objects:
+            instance = deepcopy(self.objects[id_])
+
+            for key in kwargs:
+                setattr(instance, key, kwargs[key])
+
+            return instance
+        else:
+            raise ModuleNotFoundError("ID not found!")
+
+    def copy_clone(self, id_: int, **kwargs: dict) -> Any:
+        if id_ in self.objects:
+            instance = copy(self.objects[id_])
+
+            for key in kwargs:
+                setattr(instance, key, kwargs[key])
+
+            return instance
+        else:
+            raise ModuleNotFoundError("ID not found!")
+
+character = CharacterB("Wizard", {"strength": 5, "mana": 100})
+prototypesB = PrototypeB()
+prototypesB.add_prototype("1", character)
+
+shallow_copy = prototypesB.copy_clone("1")
+deep_copy = prototypesB.deep_clone("1")
+
+character.attributes["strength"] = 10
+print(f"Original: {character}")
+print(f"Shallow: {shallow_copy}")
+print(f"Deep: {deep_copy}")
+
+#Zadanie 4. C
+
+class Configuration:
+    def __init__(self, language: str, file_type: str, settings: dict) -> None:
+        self.language = language
+        self.file_type = file_type
+        self.settings = settings
+
+    def __str__(self):
+        return f"Language: {self.language}, File type: {self.file_type}, Settings: {self.settings}."
+
+
+class PrototypeC:
+    def __init__(self) -> None:
+        self.objects = dict()
+
+    def add_prototype(self, id_: int, obj: Any) -> None:
+        self.objects[id_] = obj
+
+    def del_prototype(self, id_: int) -> None:
+        del self.objects[id_]
+
+    def clone(self, id_: int, **kwargs: dict) -> Any:
+        if id_ in self.objects:
+            instance = deepcopy(self.objects[id_])
+
+            for key in kwargs:
+                setattr(instance, key, kwargs[key])
+
+            return instance
+        else:
+            raise ModuleNotFoundError("ID not found!")
+
+prototypesC = PrototypeC()
+configuration = Configuration("PL", "TXT", {"width":1920, "height":1080})
+prototypesC.add_prototype("1", configuration)
+config_copy = prototypesC.clone("1", language="EN")
+print(configuration)
+print(config_copy)
+
+#Zadanie 5.
+
+
