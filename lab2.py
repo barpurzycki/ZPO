@@ -672,4 +672,28 @@ print(config_copy)
 
 #Zadanie 5.
 
+class DatabaseConnection:
+    _instance = None
+    _connected = False
 
+    def __new__(cls, host="localhost", user="root", password=""):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.connect(host, user, password)
+
+        return cls._instance
+
+    def connect(self, host, user, password):
+        if not self._connected:
+            self.host = host
+            self.user = user
+            self.password = password
+            self.connection = "Połączono z bazą danych."
+            self._connected = True
+
+db1 = DatabaseConnection(host="192.168.0.0", user="admin", password="password")
+print(db1.connection)
+db2 = DatabaseConnection(host="192.168.1.1", user="admin2", password="password1234")
+print(db2.connection)
+
+print(db1 is db2)
