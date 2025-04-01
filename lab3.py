@@ -97,3 +97,52 @@ stripe_adapter = PaymentAdapter(Stripe, 50)
 
 print(paypal_adapter.payment_confirmation())
 print(stripe_adapter.payment_confirmation())
+
+#Zadanie 2.
+
+class DefaultClass(ABC):
+    @abstractmethod
+    def role(self) -> str:
+        pass
+
+class User(DefaultClass):
+    def role(self) -> str:
+        return "User"
+
+class Decorator(ABC):
+    def __init__(self, obj: Any) -> None:
+        self.object = obj
+
+    @abstractmethod
+    def role(self) -> str:
+        pass
+
+class AdminDecorator(Decorator):
+    def role(self) -> str:
+        parent_value = self.object.role()
+
+        return f"Admin {parent_value}"
+
+class ModeratorDecorator(Decorator):
+    def role(self) -> str:
+        parent_value = self.object.role()
+
+        return f"Moderator {parent_value}"
+
+class GuestDecorator(Decorator):
+    def role(self) -> str:
+        parent_value = self.object.role()
+
+        return f"Guest {parent_value}"
+
+user = User()
+print(user.role())
+decorator_admin = AdminDecorator(user)
+print(decorator_admin.role())
+decorator_moderator = ModeratorDecorator(user)
+print(decorator_moderator.role())
+decorator_guest = GuestDecorator(user)
+print(decorator_guest.role())
+
+#Zadanie 2. B
+
