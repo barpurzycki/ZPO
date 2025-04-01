@@ -3,9 +3,6 @@ from dataclasses import dataclass, field, asdict
 from typing import Any
 from copy import deepcopy, copy
 
-from main import fahrenheit
-
-
 #Zadanie 1.
 
 class OldPrint:
