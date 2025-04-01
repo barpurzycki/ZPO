@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, asdict
+from tabnanny import check
 from typing import Any
 from copy import deepcopy, copy
 
@@ -145,4 +146,26 @@ decorator_guest = GuestDecorator(user)
 print(decorator_guest.role())
 
 #Zadanie 2. B
+
+def check_form(login_check):
+    def form_validation(login: str, password: str):
+        if len(login) >= 30:
+            raise Exception("Your login is too long!")
+        elif len(login) <= 5:
+            raise Exception("Your login is too short!")
+        elif len(password) >= 30:
+            raise Exception("Your password is too long!")
+        elif len(password) <= 5:
+            raise Exception("Your password is too short!")
+        else:
+            return login_check
+    return form_validation
+
+@check_form
+def login_check(login: str, password: str):
+    print(login, password)
+
+login_check("login", "passasd")
+
+#Zadanie 2. C
 
