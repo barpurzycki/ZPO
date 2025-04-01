@@ -70,3 +70,30 @@ adapter = CelsiusAdapter(fahrenheit)
 
 print(fahrenheit.temperature_in_fahrenheit())
 print(adapter.temperature_in_celsius())
+
+class PayPal:
+    def __init__(self, payment: float) -> None:
+        self.payment = payment
+
+    def confirmation(self):
+        return f"Payment confirmed via Paypal: {self.payment}."
+
+class Stripe:
+    def __init__(self, payment: float) -> None:
+        self.payment = payment
+
+    def confirmation(self):
+        return f"Payment confirmed via Stripe: {self.payment}."
+
+class PaymentAdapter:
+    def __init__(self, payment_system, payment: float) -> None:
+        self.payment_system = payment_system(payment)
+
+    def payment_confirmation(self):
+        return self.payment_system.confirmation()
+
+paypal_adapter = PaymentAdapter(PayPal, 100)
+stripe_adapter = PaymentAdapter(Stripe, 50)
+
+print(paypal_adapter.payment_confirmation())
+print(stripe_adapter.payment_confirmation())
