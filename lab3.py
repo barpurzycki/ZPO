@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, asdict
-from tabnanny import check
 from typing import Any
 from copy import deepcopy, copy
+from time import time
 
 #Zadanie 1.
 
@@ -165,7 +165,26 @@ def check_form(login_check):
 def login_check(login: str, password: str):
     print(login, password)
 
-login_check("login", "passasd")
+login_check("login1", "passasd")
 
 #Zadanie 2. C
 
+def timeit(fn: callable) -> callable:
+    def wrapper(*args: list) -> str:
+        start = time()
+        result = fn(*args)
+        stop = time()
+
+        print(stop - start)
+
+        return result
+
+    return wrapper
+
+class Database:
+    @timeit
+    def connection(self) -> str:
+        return "Connected to database."
+
+database = Database()
+print(database.connection())
