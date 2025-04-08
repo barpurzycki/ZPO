@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, asdict
-from typing import Any
+from typing import Any, TextIO
 from copy import deepcopy, copy
 from time import time
+import os
 
 #Zadanie 1.
 
@@ -188,3 +189,68 @@ class Database:
 
 database = Database()
 print(database.connection())
+
+#Zadanie 3. A
+
+class FileOpen:
+    def open_file(self, file_path: str, mode: str) -> TextIO:
+        return open(file_path, mode)
+
+class FileClose:
+    def close_file(self, file: str):
+        file.close()
+
+class FileWrite:
+    def __init__(self, open: FileOpen, close: FileClose) -> None:
+        self.open = open
+        self.close = close
+
+    def write_file(self, file_path: str, text: str) -> None:
+        file = self.open.open_file(file_path, "w")
+        file.write(text)
+        self.close.close_file(file)
+
+class FileRead:
+    def __init__(self, open: FileOpen, close: FileClose) -> None:
+        self.open = open
+        self.close = close
+
+    def read_file(self, file_path: str) -> str:
+        file = self.open.open_file(file_path, "r")
+        text = file.read()
+        self.close.close_file(file)
+        return text
+
+class FileDelete:
+    def delete_file(self, file_path: str) -> None:
+        os.remove(file_path)
+
+class FacadeFileManager:
+    def __init__(self) -> None:
+        open = FileOpen()
+        close = FileClose()
+        self.write = FileWrite(open, close)
+        self.read = FileRead(open, close)
+        self.delete = FileDelete()
+
+    def file_write(self, file_path: str, text: str) -> None:
+        self.write.write_file(file_path, text)
+        print("Zapisano do pliku.")
+
+    def file_read(self, file_path: str) -> str:
+        return f'Czytam z pliku: {self.read.read_file(file_path)}'
+
+    def file_delete(self, file_path: str) -> None:
+        self.delete.delete_file(file_path)
+        print("Usunięto plik.")
+
+
+file_path_facade = "test2.txt"
+
+facade = FacadeFileManager()
+
+facade.file_write(file_path_facade, "Test2")
+
+print(facade.file_read(file_path_facade))
+
+facade.file_delete(file_path_facade)
