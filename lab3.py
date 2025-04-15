@@ -506,3 +506,118 @@ main_report = ReportSection("Report")
 main_report.add_section(section1)
 main_report.add_section(other_section)
 main_report.display()
+
+#Zadanie 5. A
+
+class Document(ABC):
+    def __init__(self, text: str) -> None:
+        self.text = text
+
+    @abstractmethod
+    def get_text(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_theme(self) -> str:
+        pass
+
+class LightTheme(Document):
+    text: str
+
+    def get_text(self) -> str:
+        return self.text
+
+    def get_theme(self) -> str:
+        return "light themed pdf"
+
+class DarkTheme(Document):
+    text: str
+
+    def get_text(self) -> str:
+        return self.text
+
+    def get_theme(self) -> str:
+        return "dark themed pdf"
+
+class PDF(ABC):
+    fetcher: Document
+
+    def __init__(self, fetcher: Document) -> None:
+        self.fetcher = fetcher
+
+    @abstractmethod
+    def show_doc(self) -> str:
+        pass
+
+class DarkThemedPDF(PDF):
+    fetcher: Document
+
+    def show_doc(self) -> str:
+        text = self.fetcher.get_text()
+
+        return f"Theme: Dark, PDF Text: {text}."
+
+class LightThemedPDF(PDF):
+    fetcher: Document
+
+    def show_doc(self) -> str:
+        text = self.fetcher.get_text()
+
+        return f"Theme: Light, PDF Text: {text}"
+
+text = "Test test test"
+
+fetcher0 = DarkTheme(text)
+fetcher1 = LightTheme(text)
+
+light_pdf = LightThemedPDF(fetcher1)
+dark_pdf = DarkThemedPDF(fetcher0)
+
+print(light_pdf.show_doc())
+print(dark_pdf.show_doc())
+
+#Zadanie 5. B
+
+class Remote(ABC):
+    def __init__(self, device_type: str) -> None:
+        self.device_type = device_type
+
+    @abstractmethod
+    def show_device_type(self):
+        pass
+
+class RemoteControl(Remote):
+    def show_device_type(self):
+        return f"Using {self.device_type.show_device_type()} controller."
+
+class Controller(ABC):
+    @abstractmethod
+    def show_device_type(self):
+        pass
+
+class TVController(Controller):
+    def show_device_type(self):
+        return "TV"
+
+class RadioController(Controller):
+    def show_device_type(self):
+        return "Radio"
+
+class DroneController(Controller):
+    def show_device_type(self):
+        return "Drone"
+
+TV = TVController()
+Radio = RadioController()
+Drone = DroneController()
+
+tv_controller = RemoteControl(TV)
+radio_controller = RemoteControl(Radio)
+drone_controller = RemoteControl(Drone)
+
+print(tv_controller.show_device_type())
+print(radio_controller.show_device_type())
+print(drone_controller.show_device_type())
+
+#Zadanie 5. C
+
