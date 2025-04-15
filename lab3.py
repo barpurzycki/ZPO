@@ -393,3 +393,116 @@ subfolder.add(file2)
 subfolder.add(file3)
 
 folder.display()
+
+#Zadanie 4. B
+
+class Permission:
+    def __init__(self, permission : str) -> None:
+        self.permission = permission
+
+class PermissionHolder(ABC):
+    def __init__(self, name: str):
+        self.name = name
+        self.permissions = []
+
+    def add_permission(self, permission: Permission) -> None:
+        self.permissions.append(permission)
+
+    def remove_permission(self, permission: Permission) -> None:
+        self.permissions.remove(permission)
+
+    @abstractmethod
+    def has_permission(self, permission: Permission) -> bool:
+        pass
+
+class User(PermissionHolder):
+    def has_permission(self, permission: Permission) -> bool:
+        return permission in self.permissions
+
+class Group(PermissionHolder):
+    def __init__(self, name: str) -> None:
+        super().__init__(name)
+        self.members = []
+
+    def add_member(self, member:PermissionHolder) -> None:
+        self.members.append(member)
+
+    def remove_member(self, member:PermissionHolder) -> None:
+        self.members.remove(member)
+
+    def has_permission(self, permission: Permission) -> bool:
+        if permission in self.permissions:
+            return True
+        return any(member.has_permission(permission) for member in self.members)
+
+read = Permission("read")
+write = Permission("write")
+delete = Permission("delete")
+
+bartek = User("Bartek")
+david = User("David")
+bartek.add_permission(read)
+
+mods = Group("Moderators")
+mods.add_permission(write)
+mods.add_member(bartek)
+
+admins = Group("Admins")
+admins.add_permission(delete)
+admins.add_member(mods)
+admins.add_member(david)
+
+# Podgląd
+print(f"Bartek permission: 'read': {bartek.has_permission(read)}")
+print(f"Bartek permission: 'write': {bartek.has_permission(write)}")
+print(f"Bartek permission: 'delete': {bartek.has_permission(delete)}")
+print(f"David permission: 'delete': {david.has_permission(delete)}")
+print(f"Admins permissions: 'write': {admins.has_permission(write)}")
+
+#Zadanie 4. C
+
+class ReportComponent(ABC):
+    @abstractmethod
+    def display(self, indent: int = 0) -> None:
+        pass
+
+class Value(ReportComponent):
+    def __init__(self, name: str, value: float) -> None:
+        self.name = name
+        self.value = value
+
+    def display(self, indent: int = 0) -> None:
+        print(' ' * indent + f'{self.name}: {self.value}')
+
+class ReportSection(ReportComponent):
+    def __init__(self, title: str) -> None:
+        self.title = title
+        self.sections = []
+
+    def add_section(self, section: ReportComponent):
+        self.sections.append(section)
+
+    def remove_section(self, section: ReportComponent):
+        self.sections.remove(section)
+
+    def display(self, indent: int = 0) -> None:
+        print(" " * indent + f"[{self.title}]")
+        for section in self.sections:
+            section.display(indent + 1)
+
+value1 = Value("value1", 10000)
+value2 = Value("value2", 20000)
+section1 = ReportSection("Section1")
+section1.add_section(value1)
+section1.add_section(value2)
+
+other_value1 = Value("Other value1", 30000)
+other_value2 = Value("Other value2", 40000)
+other_section = ReportSection("Other Section")
+other_section.add_section(other_value1)
+other_section.add_section(other_value2)
+
+main_report = ReportSection("Report")
+main_report.add_section(section1)
+main_report.add_section(other_section)
+main_report.display()
