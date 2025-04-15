@@ -621,3 +621,60 @@ print(drone_controller.show_device_type())
 
 #Zadanie 5. C
 
+class Shape(ABC):
+    def __init__(self, shape: str) -> None:
+        self.shape = shape
+
+    @abstractmethod
+    def show_shape_type(self) -> str:
+        pass
+
+class Circle(Shape):
+    shape: str
+
+    def show_shape_type(self) -> str:
+        return "Circle"
+
+class Rectangle(Shape):
+    shape: str
+
+    def show_shape_type(self) -> str:
+        return "Rectangle"
+
+class GraphicTech(ABC):
+    fetcher: Shape
+
+    def __init__(self, fetcher: Shape) -> None:
+        self.fetcher = fetcher
+
+    @abstractmethod
+    def show_graphic_technology(self) -> str:
+        pass
+
+class SVG(GraphicTech):
+    fetcher: Shape
+
+    def show_graphic_technology(self) -> str:
+        shape = self.fetcher.show_shape_type()
+
+        return f"Making {shape} via SVG."
+
+class BMP(GraphicTech):
+    fetcher: Shape
+
+    def show_graphic_technology(self) -> str:
+        shape = self.fetcher.show_shape_type()
+
+        return f"Making {shape} via BMP."
+
+
+circle = Circle("circle")
+rectangle1 = Rectangle("rectangle")
+
+svg = SVG(circle)
+bmp = BMP(rectangle1)
+bmp1 = BMP(circle)
+
+print(svg.show_graphic_technology())
+print(bmp.show_graphic_technology())
+print(bmp1.show_graphic_technology())
