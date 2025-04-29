@@ -133,3 +133,219 @@ user3 = User("Szymon", usd)
 
 eur.update_rate(4.4)
 usd.update_rate(3.8)
+
+#Zadanie 3. A
+
+class Document(ABC):
+    name: str
+    content: str
+
+    def __init__(self, name: str, content: str) -> None:
+        self.name = name
+        self.content = content
+
+    @abstractmethod
+    def save(self) -> str:
+        pass
+
+    @abstractmethod
+    def show_content(self) -> str:
+        pass
+
+    def show_extension(self) -> str:
+        pass
+
+    def show_file(self) -> None:
+        self.save()
+        self.show_content()
+        self.show_extension()
+
+class PDF(Document):
+    def save(self) -> str:
+        print("PDF file saved.")
+
+    def show_content(self) -> str:
+        print(self.content)
+
+    def show_extension(self) -> str:
+        print("PDF File")
+
+class DOCX(Document):
+    def save(self) -> str:
+        print("DOCX file saved.")
+
+    def show_content(self) -> str:
+        print(self.content)
+
+    def show_extension(self) -> str:
+        print("DOCX File")
+
+class TXT(Document):
+    def save(self) -> str:
+        print("TXT file saved.")
+
+    def show_content(self) -> str:
+        print(self.content)
+
+    def show_extension(self) -> str:
+        print("TXT File")
+
+pdf_file = PDF("PlikPDF", "To jest zawartosc pliku PDF")
+docx_file = DOCX("PlikDOCX", "To jest zawartosc pliku DOCX")
+txt_file = TXT("PlikTXT", "To jest zawartosc pliku TXT")
+
+print("====")
+pdf_file.show_file()
+print("====")
+docx_file.show_file()
+print("====")
+txt_file.show_file()
+print("====")
+
+#Zadanie 4.
+
+class Memento:
+    _states: list
+    _i: int
+
+    def __init__(self) -> None:
+        self._states = []
+        self._i = -1
+
+    def save_state(self, state: str) -> None:
+        if self._i != len(self._states) - 1:
+            self._states = self._states[:self._i + 1]
+
+        self._states.append(state)
+        self._i += 1
+
+    def undo(self) -> None:
+        if self._i > 0:
+            self._i -= 1
+
+    def redo(self) -> None:
+        if self._i < len(self._states) - 1:
+            self._i += 1
+
+    def read_state(self) -> str:
+        return self._states[self._i]
+
+class Settings:
+    def __init__(self) -> None:
+        self.settings = []
+        self.memento = Memento()
+
+    def add_setting(self, setting: str) -> None:
+        self.settings.append(setting)
+        self.memento.save_state(self.settings)
+
+    def show_settings(self, show_deleted: bool = True) -> None:
+        for i, setting in enumerate(self.settings):
+            if not show_deleted and setting.startswith("!"):
+                continue
+            print(i+1, setting)
+
+    def delete_setting(self, num: int) -> None:
+        self.settings[num-1] = "!" + self.settings[num-1]
+        self.memento.save_state(self.settings)
+
+    def undo(self) -> None:
+        self.memento.undo()
+        self.settings = self.memento.read_state()
+
+    def redo(self) -> None:
+        self.memento.redo()
+        self.settings = self.memento.read_state()
+
+player_settings = Settings()
+player_settings.add_setting("Audio 50")
+player_settings.show_settings()
+player_settings.add_setting("Video Quality Medium")
+player_settings.add_setting("WASD movement")
+player_settings.show_settings()
+player_settings.delete_setting(1)
+player_settings.show_settings()
+player_settings.show_settings(show_deleted=False)
+player_settings.undo()
+player_settings.show_settings()
+
+#Zadanie 5.
+
+class TeamMember(ABC):
+    application: str
+
+    def process(self, application: str) -> bool | None:
+        print(f"No one can do {application}. Please hire a new specialist.")
+
+class Director(TeamMember):
+    def process(self, application: str) -> bool | None:
+        if "Director" in application:
+            self.sign_director_application()
+            return True
+
+        return False
+
+    @staticmethod
+    def sign_director_application() -> None:
+        print("Director application sign.")
+
+class COO(TeamMember):
+    def process(self, application: str) -> bool | None:
+        if "COO" in application:
+            self.sign_coo_application()
+            return True
+
+        return False
+
+    @staticmethod
+    def sign_coo_application() -> None:
+        print("COO application sign.")
+
+class CTO(TeamMember):
+    def process(self, application: str) -> bool | None:
+        if "CTO" in application:
+            self.sign_cto_application()
+            return True
+
+        return False
+
+    @staticmethod
+    def sign_cto_application() -> None:
+        print("CTO application sign.")
+
+class CEO(TeamMember):
+    def process(self, application: str) -> bool | None:
+        if "CEO" in application:
+            self.sign_ceo_application()
+            return True
+
+        return False
+
+    @staticmethod
+    def sign_ceo_application() -> None:
+        print("CEO application sign.")
+
+class Chain:
+    chain: list
+
+    def __init__(self):
+        self.chain = []
+
+    def sign_application(self, application: str) -> None:
+        for link in self.chain:
+            result = link.process(application)
+            if result:
+                break
+
+chain_0 = Chain()
+
+chain_0.chain.append(Director())
+chain_0.chain.append(COO())
+chain_0.chain.append(CTO())
+chain_0.chain.append(CEO())
+
+application = "Sign a COO application."
+chain_0.sign_application(application)
+
+application2 = "Director has to sign this application"
+chain_0.sign_application(application2)
