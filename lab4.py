@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from random import choice
 from typing import Self, Any
 import numpy as np
+from collections import deque
 
 
 #Zadanie 1. A
@@ -349,3 +350,122 @@ chain_0.sign_application(application)
 
 application2 = "Director has to sign this application"
 chain_0.sign_application(application2)
+
+#Zadanie 6. A
+
+class Switch:
+    history: deque
+
+    def __init__(self) -> None:
+        self.history = deque()
+
+    def execute(self, command):
+        self.history.appendleft(command)
+        command.execute()
+
+    def get_history(self):
+        return self.history
+
+class Light:
+    state: str
+
+    def __init__(self, state: str = "off") -> None:
+        self.state = state
+
+    def turn_on(self) -> None:
+        print("Light turned on.")
+        self.state = "on"
+
+    def turn_off(self) -> None:
+        print("Light turned off.")
+        self.state = "off"
+
+class Heat:
+    state: str
+
+    def __init__(self, state: str = "off") -> None:
+        self.state = state
+
+    def turn_on(self) -> None:
+        print("Heat turned on.")
+        self.state = "on"
+
+    def turn_off(self) -> None:
+        print("Heat turned off")
+        self.state = "off"
+
+class CommandLight(ABC):
+    light: Light
+
+    def __init__(self, light: Light) -> None:
+        self.light = light
+
+    @abstractmethod
+    def execute(self) -> None:
+        pass
+
+class CommandHeat(ABC):
+    heat: Heat
+
+    def __init__(self, heat: Heat) -> None:
+        self.heat = heat
+
+    @abstractmethod
+    def execute(self) -> None:
+        pass
+
+class TurnLightOn(CommandLight):
+    def execute(self) -> None:
+        self.light.turn_on()
+
+class TurnLightOff(CommandLight):
+    def execute(self) -> None:
+        self.light.turn_off()
+
+class TurnHeatOn(CommandHeat):
+    def execute(self) -> None:
+        self.heat.turn_on()
+
+class TurnHeatOff(CommandHeat):
+    def execute(self) -> None:
+        self.heat.turn_off()
+
+class Switcher:
+    light: Light
+    heat: Heat
+    switch: Switch
+
+    def __init__(self, light: Light, heat: Heat, switch: Switch) -> None:
+        self._light = light
+        self._heat = heat
+        self._switch = switch
+
+    def toggle_light(self, cmd: str) -> None:
+        if cmd.lower() == "on":
+            self._switch.execute(TurnLightOn(self._light))
+        else:
+            self._switch.execute(TurnLightOff(self._light))
+
+    def toggle_heat(self, cmd: str) -> None:
+        if cmd.lower() == "on":
+            self._switch.execute(TurnHeatOn(self._heat))
+        else:
+            self._switch.execute(TurnHeatOff(self._heat))
+
+my_light = Light()
+my_heat = Heat()
+my_switch = Switch()
+
+smart_switcher = Switcher(my_light, my_heat, my_switch)
+
+command = "on"
+
+smart_switcher.toggle_light(command)
+smart_switcher.toggle_heat(command)
+
+command_off = "off"
+
+smart_switcher.toggle_light(command_off)
+smart_switcher.toggle_heat(command_off)
+
+print(my_switch.get_history())
