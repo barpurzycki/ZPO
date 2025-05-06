@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from random import choice
-from typing import Self, Any
+from typing import Self, Any, OrderedDict
 import numpy as np
 from collections import deque
 
@@ -469,3 +469,54 @@ smart_switcher.toggle_light(command_off)
 smart_switcher.toggle_heat(command_off)
 
 print(my_switch.get_history())
+
+#Zadanie 8. A
+
+class OrderState(ABC):
+    @abstractmethod
+    def order(self):
+        pass
+
+class NewOrderState(OrderState):
+    def order(self) -> None:
+        print("Nowe zamówienie przyjęte.")
+
+class SentOrderState(OrderState):
+    def order(self) -> None:
+        print("Zamówienie zostało wysłane.")
+
+class ReceivedOrderState(OrderState):
+    def order(self) -> None:
+        print("Zamówienie zostało odebrane.")
+
+class NormalOrderState(OrderState):
+    def order(self) -> None:
+        print("Brak złożonego zamówienia.")
+
+class OnlineShop:
+    state: OrderState
+
+    def __init__(self, state: OrderState = NormalOrderState()) -> None:
+        self.state = state
+
+    def set_state(self, state: OrderState):
+        self.state = state
+
+    def order(self) -> None:
+        self.state.order()
+
+normal_state = NormalOrderState()
+new_state = NewOrderState()
+sent_state = SentOrderState()
+received_state = ReceivedOrderState()
+
+online_shop = OnlineShop()
+
+online_shop.order()
+
+online_shop.set_state(new_state)
+online_shop.order()
+online_shop.set_state(sent_state)
+online_shop.order()
+online_shop.set_state(received_state)
+online_shop.order()
