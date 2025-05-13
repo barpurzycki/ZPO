@@ -1,4 +1,23 @@
 from abc import ABC, abstractmethod
+from typing import Self
+
+class Login:
+    _instance: Self = None
+    _connected = False
+
+    def connect(self, login: str, password: str) -> None:
+        if not self._connected:
+            self.login = login
+            self.password = password
+            self.connection = f"Połączono z aplikacją: {self.login}"
+            self._connected = True
+
+    def __new__(cls, login: str, password: str) -> Self:
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.connect(login, password)
+
+        return cls._instance
 
 class User:
     def __init__(self, login: str = None, password: str = None, email: str = None, role: str = None,
@@ -84,9 +103,13 @@ class Director:
 
         return self.builder.get_user()
 
+
 director = Director()
 student = director.create_new_user("LoginStudent", "PassStudent12", "student@email.com", "Student")
 professor = director.create_new_user("ProfLogin", "ProfPass123", "professor@email.com", "Professor")
 
 print(student)
 print(professor)
+
+login = Login("LoginStudent", "PassStudent12")
+print(login.connection)
