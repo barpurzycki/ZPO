@@ -81,7 +81,35 @@ class Director:
 
         return self.builder.get_book()
 
-director = Director()
-the_witcher = director.add_new_book("The Witcher", 2025, "Sapkowski", "Fantasy")
+class BookLibrary:
+    def __init__(self):
+        self._books = []
 
-print(the_witcher)
+    def add_book(self, book):
+        self._books.append(book)
+
+    def delete_book(self, book):
+        if book in self._books:
+            self._books.remove(book)
+
+    def edit_book(self, book, property, value):
+        if book in self._books:
+            if hasattr(book, property):
+                setattr(book, property, value)
+
+    def show_books(self):
+        for book in self._books:
+            print(book)
+
+director = Director()
+library = BookLibrary()
+
+the_witcher = director.add_new_book("The Witcher", 2025, "Sapkowski", "Fantasy")
+harry_potter = director.add_new_book("Harry Potter", 1997, "J.K. Rowling", "Fantasy")
+
+library.add_book(the_witcher)
+library.add_book(harry_potter)
+
+library.edit_book(harry_potter, "year", 2000)
+
+library.show_books()
