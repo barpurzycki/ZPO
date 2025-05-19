@@ -3,14 +3,6 @@ from typing import Self
 
 class Login:
     _instance: Self = None
-    _connected = False
-
-    def connect(self, login: str, password: str) -> None:
-        if not self._connected:
-            self.login = login
-            self.password = password
-            self.connection = f"Połączono z aplikacją: {self.login}"
-            self._connected = True
 
     def __new__(cls, login: str, password: str) -> Self:
         if cls._instance is None:
@@ -19,7 +11,17 @@ class Login:
 
         return cls._instance
 
+    def connect(self, login: str, password: str) -> bool:
+        if login in User.users_info and User.users_info[login] == password:
+            print("Logged in successfully.")
+        else:
+            print("Login not in database.")
+
+
+
 class User:
+    users_info = {}
+
     def __init__(self, login: str = None, password: str = None, email: str = None, role: str = None,
         permissions: list = None) -> None:
         self.login = login
@@ -36,6 +38,13 @@ class User:
             f"Role: {self.role}\n"
             f"Permissions: {self.permissions}\n"
         )
+
+    def register(self):
+        if self.login in User.users_info:
+            print("User already exists.")
+        else:
+            User.users_info[self.login] = self.password
+            print(f"User registered: {self.login}, {self.password}.")
 
 class UserBuilder(ABC):
     def __init__(self) -> None:
@@ -111,5 +120,6 @@ professor = director.create_new_user("ProfLogin", "ProfPass123", "professor@emai
 print(student)
 print(professor)
 
-login = Login("LoginStudent", "PassStudent12")
-print(login.connection)
+student.register()
+
+connect = Login("LoginStudent", "PassStudent12")
