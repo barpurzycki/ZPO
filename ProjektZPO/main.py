@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Self
+from typing import Self, Any
 
 class Login:
     _instance: Self = None
@@ -12,7 +12,7 @@ class Login:
 
         return cls._instance
 
-    def connect(self, login: str, password: str) -> bool:
+    def connect(self, login: str, password: str) -> None:
         if login in User.users_info and User.users_info[login] == password:
             print("Logged in successfully.")
             Login._logged = True
@@ -20,12 +20,39 @@ class Login:
             print("Login not in database.")
             Login._logged = False
 
-class User:
+
+class Observable(ABC):
+    _observers: set
+
+    def __init__(self) -> None:
+        self._observers = set()
+
+    def add_observer(self, observer: Any) -> None:
+        self._observers.add(observer)
+
+    def delete_observer(self, observer: Any) -> None:
+        self._observers.remove(observer)
+
+    def notify(self, *args: list, **kwargs: dict) -> None:
+        for observer in self._observers:
+            observer.notify(book=self, *args, **kwargs)
+
+
+class Observer(ABC):
+    def __init__(self, observable: Observable) -> None:
+        observable.add_observer(self)
+
+    @abstractmethod
+    def notify(self, *args: list, **kwargs: dict) -> None:
+        pass
+
+
+class User():
     users_info = {}
     borrowed_books = []
 
-    def __init__(self, login: str = None, password: str = None, email: str = None, role: str = None,
-        permissions: list = None) -> None:
+    def __init__(self, login: str = None, password: str = None, email: str = None,
+                 role: str = None, permissions: list = None) -> None:
         self.login = login
         self.password = password
         self.email = email
@@ -92,6 +119,10 @@ class User:
             else:
                 print(f"Book {book.title} is not available right now.")
 
+    def notify(self, *args: list, **kwargs: dict) -> None:
+        book = kwargs["book"]
+
+
 
 class UserBuilder(ABC):
     def __init__(self) -> None:
@@ -138,6 +169,7 @@ class ProfessorBuilder(UserBuilder):
         self.user.permissions = ["view_content", "delete_user", "check_user"]
         return self
 
+
 class UserDirector:
     def __init__(self) -> None:
         self.builder = None
@@ -159,8 +191,10 @@ class UserDirector:
 
         return self.builder.get_user()
 
-class Book:
+
+class Book(Observable):
     def __init__(self, title: str = None, year: int = None, author: str = None, genre: str = None) -> None:
+        super().__init__()
         self.title = title
         self.year = year
         self.author = author
@@ -171,6 +205,7 @@ class Book:
                 f"Author: {self.author}\n"
                 f"Genre: {self.genre}\n"
                 f"Year: {self.year}.")
+
 
 class BookBuilder(ABC):
     def __init__(self) -> None:
@@ -189,31 +224,32 @@ class BookBuilder(ABC):
         return self
 
     @abstractmethod
-    def genre_set(self, genre):
+    def genre_set(self):
         pass
 
     def get_book(self):
         return self.book
 
 class FantasyBookBuilder(BookBuilder):
-    def genre_set(self, genre):
+    def genre_set(self):
         self.book.genre = "Fantasy"
         return self
 
 class RomanceBookBuilder(BookBuilder):
-    def genre_set(self, genre):
+    def genre_set(self):
         self.book.genre = "Romance"
         return self
 
 class DramaBookBuilder(BookBuilder):
-    def genre_set(self, genre):
+    def genre_set(self):
         self.book.genre = "Drama"
         return self
 
 class ComedyBookBuilder(BookBuilder):
-    def genre_set(self, genre):
+    def genre_set(self):
         self.book.genre = "Comedy"
         return self
+
 
 class BookDirector:
     def __init__(self) -> None:
@@ -238,6 +274,7 @@ class BookDirector:
         self.builder.genre_set()
 
         return self.builder.get_book()
+
 
 class BookLibrary:
     books = []
