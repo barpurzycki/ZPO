@@ -85,6 +85,13 @@ class User:
         else:
             print("User is not logged in.")
 
+    def is_book_available(self, book):
+        if Login._logged == True:
+            if book not in self.borrowed_books:
+                print(f"Book {book.title} available.")
+            else:
+                print(f"Book {book.title} is not available right now.")
+
 
 class UserBuilder(ABC):
     def __init__(self) -> None:
@@ -189,7 +196,7 @@ class BookBuilder(ABC):
         return self.book
 
 class FantasyBookBuilder(BookBuilder):
-    def genre_set(self):
+    def genre_set(self, genre):
         self.book.genre = "Fantasy"
         return self
 
@@ -284,3 +291,6 @@ student.show_borrowed_books()
 
 student.return_book(harry_potter)
 student.show_borrowed_books()
+
+student.is_book_available(the_witcher)
+student.is_book_available(harry_potter)
