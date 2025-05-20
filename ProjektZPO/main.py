@@ -20,7 +20,6 @@ class Login:
             print("Login not in database.")
             Login._logged = False
 
-
 class User:
     users_info = {}
     borrowed_books = []
@@ -42,6 +41,21 @@ class User:
             f"Permissions: {self.permissions}\n"
         )
 
+    def check_form(register):
+        def form_validation(self):
+            if len(self.login) >= 30:
+                raise Exception("Login is too long.")
+            elif len(self.login) <= 6:
+                raise Exception("Login is too short.")
+            elif len(self.password) >= 30:
+                raise Exception("Password is too long.")
+            elif len(self.password) <= 6:
+                raise Exception("Password is too short.")
+            else:
+                return register(self)
+        return form_validation
+
+    @check_form
     def register(self):
         if self.login in User.users_info:
             print("User already exists.")
@@ -55,10 +69,21 @@ class User:
         else:
             print("User is not logged in.")
 
+    def return_book(self, book):
+        if Login._logged == True:
+            print(f"Returned book:\n{book.title}")
+            self.borrowed_books.remove(book)
+        else:
+            print("User is not logged in.")
+
     def show_borrowed_books(self):
-        print("Borrowed books:")
-        for book in self.borrowed_books:
-            print(book)
+        if Login._logged == True:
+            if self.borrowed_books:
+                print("Borrowed books:")
+                for book in self.borrowed_books:
+                    print(book.title)
+        else:
+            print("User is not logged in.")
 
 
 class UserBuilder(ABC):
@@ -135,8 +160,7 @@ class Book:
         self.genre = genre
 
     def __str__(self):
-        return (f"Book:\n"
-                f"Title: {self.title}\n"
+        return (f"Title: {self.title}\n"
                 f"Author: {self.author}\n"
                 f"Genre: {self.genre}\n"
                 f"Year: {self.year}.")
@@ -209,6 +233,8 @@ class BookDirector:
         return self.builder.get_book()
 
 class BookLibrary:
+    books = []
+
     def __init__(self):
         self._books = []
 
@@ -231,15 +257,14 @@ class BookLibrary:
 
 user_director = UserDirector()
 student = user_director.create_new_user("LoginStudent", "PassStudent12", "student@email.com", "Student")
-professor = user_director.create_new_user("ProfLogin", "ProfPass123", "professor@email.com", "Professor")
 
 book_director = BookDirector()
 library = BookLibrary()
 the_witcher = book_director.add_new_book("The Witcher", 2025, "Sapkowski", "Fantasy")
 harry_potter = book_director.add_new_book("Harry Potter", 1997, "J.K. Rowling", "Fantasy")
+narnia = book_director.add_new_book("Narnia", 1997, "XXX", "Fantasy")
 
 print(student)
-print(professor)
 
 student.register()
 
@@ -247,11 +272,15 @@ connect = Login("LoginStudent", "PassStudent12")
 
 library.add_book(the_witcher)
 library.add_book(harry_potter)
+library.add_book(narnia)
 
 library.edit_book(harry_potter, "year", 2000)
 
 library.show_books()
 
+student.borrow_book(harry_potter)
 student.borrow_book(the_witcher)
 student.show_borrowed_books()
 
+student.return_book(harry_potter)
+student.show_borrowed_books()
