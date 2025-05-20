@@ -150,6 +150,7 @@ class UserBuilder(ABC):
 
     def get_user(self) -> User:
         return self.user
+    
 
 class StudentBuilder(UserBuilder):
     def role_set(self):
@@ -159,6 +160,7 @@ class StudentBuilder(UserBuilder):
     def permissions_set(self):
         self.user.permissions = ["view_content", "borrow_book", "reserve_book", "return_book"]
         return self
+    
 
 class ProfessorBuilder(UserBuilder):
     def role_set(self):
@@ -229,21 +231,25 @@ class BookBuilder(ABC):
 
     def get_book(self):
         return self.book
+    
 
 class FantasyBookBuilder(BookBuilder):
     def genre_set(self):
         self.book.genre = "Fantasy"
         return self
 
+
 class RomanceBookBuilder(BookBuilder):
     def genre_set(self):
         self.book.genre = "Romance"
         return self
 
+
 class DramaBookBuilder(BookBuilder):
     def genre_set(self):
         self.book.genre = "Drama"
         return self
+
 
 class ComedyBookBuilder(BookBuilder):
     def genre_set(self):
