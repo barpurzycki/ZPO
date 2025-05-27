@@ -385,6 +385,37 @@ class History:
         self.memento.undo_state()
         self.operations = self.memento.read_state()
 
+ISBN_database_record = {
+    1:
+        {
+            'title':'Programowanie poradnik',
+            'year':'2015',
+            'author':'Jakiś Hindus',
+            'genre':'Informatyka'
+        },
+    2:
+        {
+            'title':'Liczenie poradnik',
+            'year':'2025',
+            'author':'Jakiś Matematyk',
+            'genre':'Matematyka'
+        },
+    3:
+        {
+            'title':'Pisanie poradnik',
+            'year':'2000',
+            'author':'Jakiś Humanista',
+            'genre':'Polski'
+        }
+}
+
+def select_from_database(table_id: int) -> None:
+    selected_book = ISBN_database_record.get(table_id)
+    print(f"Title: {selected_book['title']}\n"
+          f"Year: {selected_book['year']}\n"
+          f"Author: {selected_book['author']}\n"
+          f"Genre: {selected_book['genre']}.")
+
 
 user_director = UserDirector()
 book_director = BookDirector()
