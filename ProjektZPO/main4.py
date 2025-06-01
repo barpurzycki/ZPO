@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Self, Any
 
+#Singleton - logowanie
 class Login:
     _instance: Self = None
     _logged: bool = False
@@ -21,6 +22,7 @@ class Login:
             Login._logged = False
 
 
+#Obserwator
 class Observable(ABC):
     _observers: set
 
@@ -51,6 +53,7 @@ class Manager(Observer):
         print(f"You can now borrow book {book.title}.")
 
 
+#Klasa User - Budowniczy
 class User():
     users_info = {}
     borrowed_books = []
@@ -73,6 +76,7 @@ class User():
             f"Permissions: {self.permissions}\n"
         )
 
+#Dekorator - sprawdzanie danych w formularzu przy rejestracji
     def check_form(register):
         def form_validation(self):
             if len(self.login) >= 30:
@@ -222,6 +226,7 @@ class UserDirector:
         return self.builder.get_user()
 
 
+#Klasa Book - budowniczy
 class Book(Observable):
     def __init__(self,  title: str = None, year: int = None, author: str = None, genre: str = None) -> None:
         super().__init__()
@@ -322,6 +327,7 @@ class BookDirector:
 
         return self.builder.get_book()
 
+#Podklasy do Fasady
 class BookList:
     def __init__(self) -> None:
         self.books = []
@@ -358,6 +364,7 @@ class BookShow:
         for book in self.book_list.books:
             print(book)
 
+#Klasa BookLibrary - Fasada spinająca podklasy zarządzania książkami
 class BookLibrary:
     def __init__(self) -> None:
         self.book_list = BookList()
@@ -378,6 +385,7 @@ class BookLibrary:
     def show_books(self):
         self._book_show.show_books()
 
+#Pamiątka
 class Memento:
     _states: list
     _i: int
@@ -417,6 +425,7 @@ class History:
         self.memento.undo_state()
         self.operations = self.memento.read_state()
 
+#"Zewnętrzna" baza danych umożliwiająca pobieranie danych książek
 ISBN_database_record = {
     1:
         {
