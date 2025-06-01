@@ -48,9 +48,7 @@ class Observer(ABC):
 
 class Manager(Observer):
     def notify(self, *args, **kwargs: dict) -> None:
-        book = kwargs["book"]
-        if book.available == True:
-            print(f"You can now borrow book {book.title}.")
+        print(f"You can now borrow book {book.title}.")
 
 
 class User():
@@ -113,6 +111,7 @@ class User():
             if book in self.borrowed_books:
                 print(f"Returned book:\n{book.title}")
                 self.borrowed_books.remove(book)
+                Manager(book)
                 book.return_book()
             else:
                 print(f"You did not borrow book {book.title}.")
@@ -453,7 +452,7 @@ def get_book_title(title: str, book_list: list):
     for book in book_list:
         if book.title == title:
             return book
-        return None
+    return None
 
 if __name__ == '__main__':
     user_director = UserDirector()
@@ -486,10 +485,10 @@ if __name__ == '__main__':
                 user.register()
 
             elif operation == "login":
-                    login = input("Podaj login")
-                    password = input("Podaj haslo")
-                    connection = Login(login, password)
-                    current_user = user
+                login = input("Podaj login")
+                password = input("Podaj haslo")
+                connection = Login(login, password)
+                current_user = user
 
         elif user.role == "Student":
             print("=====================================\n"
@@ -515,6 +514,7 @@ if __name__ == '__main__':
                 book_title = input("Wpisz tytuł książki")
                 book = get_book_title(book_title, library.book_list.books)
                 user.borrow_book(book)
+                history.add_operation(f"Wypożyczono książkę: {book.title}")
 
             elif operation == "show_borrowed_books":
                 user.show_borrowed_books()
@@ -523,6 +523,7 @@ if __name__ == '__main__':
                 book_title = input("Wpisz tytuł książki")
                 book = get_book_title(book_title, user.borrowed_books)
                 user.return_book(book)
+                history.add_operation(f"Zwrócono książkę: {book.title}")
 
             elif operation == "is_book_available":
                 book_title = input("Wpisz tytuł książki")
@@ -539,6 +540,9 @@ if __name__ == '__main__':
 
             elif operation == "show_history":
                 history.show_history()
+
+            elif operation == "undo_operation":
+                history.undo_operation()
 
             elif operation == "select_from_database":
                 id = int(input("Podaj ID książki z bazy zewnętrznej."))
