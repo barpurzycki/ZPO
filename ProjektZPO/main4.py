@@ -224,9 +224,8 @@ class UserDirector:
 
 
 class Book(Observable):
-    def __init__(self, book_id:int = 0,  title: str = None, year: int = None, author: str = None, genre: str = None) -> None:
+    def __init__(self,  title: str = None, year: int = None, author: str = None, genre: str = None) -> None:
         super().__init__()
-        self.book_id = book_id
         self.title = title
         self.year = year
         self.author = author
@@ -234,8 +233,7 @@ class Book(Observable):
         self.available = True
 
     def __str__(self):
-        return (f"ID: {self.book_id}\n"
-                f"Title: {self.title}\n"
+        return (f"Title: {self.title}\n"
                 f"Author: {self.author}\n"
                 f"Genre: {self.genre}\n"
                 f"Year: {self.year}\n"
@@ -256,10 +254,6 @@ class Book(Observable):
 class BookBuilder(ABC):
     def __init__(self) -> None:
         self.book = Book()
-
-    def book_id_set(self, book_id):
-        self.book.book_id = book_id
-        return self
 
     def title_set(self, title):
         self.book.title = title
@@ -310,7 +304,7 @@ class BookDirector:
         self.builder = None
         self.book = None
 
-    def add_new_book(self, book_id: int, title: str, year: int, author: str, genre: str):
+    def add_new_book(self, title: str, year: int, author: str, genre: str):
         if genre == "Fantasy":
             self.builder = FantasyBookBuilder()
         elif genre == "Romance":
@@ -322,7 +316,6 @@ class BookDirector:
         else:
             raise ValueError("Wrong genre.")
 
-        self.builder.book_id_set(book_id)
         self.builder.title_set(title)
         self.builder.author_set(author)
         self.builder.year_set(year)
@@ -428,7 +421,6 @@ class History:
 ISBN_database_record = {
     1:
         {
-            'ID': 1,
             'title':'Programowanie poradnik',
             'year':'2015',
             'author':'Jakiś Hindus',
@@ -436,7 +428,6 @@ ISBN_database_record = {
         },
     2:
         {
-            'ID': 2,
             'title':'Liczenie poradnik',
             'year':'2025',
             'author':'Jakiś Matematyk',
@@ -444,7 +435,6 @@ ISBN_database_record = {
         },
     3:
         {
-            'ID': 3,
             'title':'Pisanie poradnik',
             'year':'2000',
             'author':'Jakiś Humanista',
@@ -454,11 +444,16 @@ ISBN_database_record = {
 
 def select_from_database(table_id: int) -> None:
     selected_book = ISBN_database_record.get(table_id)
-    print(f"ID: {selected_book['ID']}\n"
-          f"Title: {selected_book['title']}\n"
+    print(f"Title: {selected_book['title']}\n"
           f"Year: {selected_book['year']}\n"
           f"Author: {selected_book['author']}\n"
           f"Genre: {selected_book['genre']}.")
+
+def get_book_title(title: str, book_list: list):
+    for book in book_list:
+        if book.title == title:
+            return book
+        return None
 
 if __name__ == '__main__':
     user_director = UserDirector()
@@ -467,9 +462,9 @@ if __name__ == '__main__':
     history = History()
     current_user = None
 
-    the_witcher = book_director.add_new_book(4, "The Witcher", 2025, "Sapkowski", "Fantasy")
-    harry_potter = book_director.add_new_book(5, "Harry Potter", 1997, "J.K. Rowling", "Fantasy")
-    narnia = book_director.add_new_book(6, "Narnia", 1997, "XXX", "Fantasy")
+    the_witcher = book_director.add_new_book("The Witcher", 2025, "Sapkowski", "Fantasy")
+    harry_potter = book_director.add_new_book("Harry Potter", 1997, "J.K. Rowling", "Fantasy")
+    narnia = book_director.add_new_book("Narnia", 1997, "XXX", "Fantasy")
 
     library.add_book(the_witcher)
     library.add_book(harry_potter)
@@ -497,7 +492,8 @@ if __name__ == '__main__':
                     current_user = user
 
         elif user.role == "Student":
-            print("Możliwe operacje:\n"
+            print("=====================================\n"
+                  "Możliwe operacje:\n"
                   "'show_books': Wyświetl dostępne książki.\n"
                   "'borrow_book': Wypożycz książkę.\n"
                   "'show_borrowed_books': Wyświetl swoje wypożyczone książki.\n"
@@ -508,14 +504,35 @@ if __name__ == '__main__':
                   "'show_history': Wyświetl historię operacji.\n"
                   "'undo_operation': Cofnij ostatnią operację.\n"
                   "'select_from_database': Pobierz dane książki z bazy zewnętrznej.\n"
-                  "'logout': Wyloguj.")
+                  "'logout': Wyloguj.\n"
+                  "=====================================")
             operation = input("Podaj operację, jaką chcesz wykonać.")
 
             if operation == "show_books":
                 library.show_books()
 
+            elif operation == "borrow_book":
+                book_title = input("Wpisz tytuł książki")
+                book = get_book_title(book_title, library.book_list.books)
+                user.borrow_book(book)
+
             elif operation == "show_borrowed_books":
                 user.show_borrowed_books()
+
+            elif operation == "return_book":
+                book_title = input("Wpisz tytuł książki")
+                book = get_book_title(book_title, user.borrowed_books)
+                user.return_book(book)
+
+            elif operation == "is_book_available":
+                book_title = input("Wpisz tytuł książki")
+                book = get_book_title(book_title, library.book_list.books)
+                user.is_book_available(book)
+
+            elif operation == "reserve_book":
+                book_title = input("Wpisz tytuł książki")
+                book = get_book_title(book_title, library.book_list.books)
+                user.reserve_book(book)
 
             elif operation == "show_reserved_books":
                 user.show_reserved_books()
@@ -537,11 +554,32 @@ if __name__ == '__main__':
                   "'add_book': Dodaj książkę.\n"
                   "'delete_book': Usuń książkę.\n"
                   "'edit_book': Edytuj książkę.\n"
-                  "'logout': Wyloguj.")
+                  "'logout': Wyloguj.\n"
+                  "=====================================")
             operation = input("Podaj operację, jaką chcesz wykonać.")
 
             if operation == "show_books":
                 library.show_books()
+
+            if operation == "add_book":
+                input_title = input("Podaj tytuł książki")
+                input_year = input("Podaj rok wydania książki")
+                input_author = input("Podaj autora książki")
+                input_genre = input("Podaj gatunek książki")
+                book = book_director.add_new_book(input_title, input_year, input_author, input_genre)
+                library.add_book(book)
+
+            if operation == "delete_book":
+                book_title = input("Wpisz tytuł książki")
+                book = get_book_title(book_title, library.book_list.books)
+                library.delete_book(book)
+
+            if operation == "edit_book":
+                book_title = input("Wpisz tytuł książki")
+                book = get_book_title(book_title, library.book_list.books)
+                property = input("Wpisz, co chcesz edytować (title, year, author, genre)")
+                value = input("Wpisz wartość")
+                library.edit_book(book, property, value)
 
             elif operation == "logout":
                 print("Użytkownik wylogowany.")
