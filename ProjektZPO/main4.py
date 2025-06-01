@@ -1,9 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Self, Any
 
-import user
-
-
 class Login:
     _instance: Self = None
     _logged: bool = False
@@ -200,7 +197,7 @@ class ProfessorBuilder(UserBuilder):
         return self
 
     def permissions_set(self):
-        self.user.permissions = ["view_content", "delete_user", "check_user"]
+        self.user.permissions = ["view_content", "add_book", "delete_book", "edit_book"]
         return self
 
 
@@ -227,8 +224,9 @@ class UserDirector:
 
 
 class Book(Observable):
-    def __init__(self, title: str = None, year: int = None, author: str = None, genre: str = None) -> None:
+    def __init__(self, book_id:int = 0,  title: str = None, year: int = None, author: str = None, genre: str = None) -> None:
         super().__init__()
+        self.book_id = book_id
         self.title = title
         self.year = year
         self.author = author
@@ -236,7 +234,8 @@ class Book(Observable):
         self.available = True
 
     def __str__(self):
-        return (f"Title: {self.title}\n"
+        return (f"ID: {self.book_id}\n"
+                f"Title: {self.title}\n"
                 f"Author: {self.author}\n"
                 f"Genre: {self.genre}\n"
                 f"Year: {self.year}\n"
@@ -257,6 +256,10 @@ class Book(Observable):
 class BookBuilder(ABC):
     def __init__(self) -> None:
         self.book = Book()
+
+    def book_id_set(self, book_id):
+        self.book.book_id = book_id
+        return self
 
     def title_set(self, title):
         self.book.title = title
@@ -307,7 +310,7 @@ class BookDirector:
         self.builder = None
         self.book = None
 
-    def add_new_book(self, title: str, year: int, author: str, genre: str):
+    def add_new_book(self, book_id: int, title: str, year: int, author: str, genre: str):
         if genre == "Fantasy":
             self.builder = FantasyBookBuilder()
         elif genre == "Romance":
@@ -319,6 +322,7 @@ class BookDirector:
         else:
             raise ValueError("Wrong genre.")
 
+        self.builder.book_id_set(book_id)
         self.builder.title_set(title)
         self.builder.author_set(author)
         self.builder.year_set(year)
@@ -424,6 +428,7 @@ class History:
 ISBN_database_record = {
     1:
         {
+            'ID': 1,
             'title':'Programowanie poradnik',
             'year':'2015',
             'author':'Jakiś Hindus',
@@ -431,6 +436,7 @@ ISBN_database_record = {
         },
     2:
         {
+            'ID': 2,
             'title':'Liczenie poradnik',
             'year':'2025',
             'author':'Jakiś Matematyk',
@@ -438,6 +444,7 @@ ISBN_database_record = {
         },
     3:
         {
+            'ID': 3,
             'title':'Pisanie poradnik',
             'year':'2000',
             'author':'Jakiś Humanista',
@@ -447,7 +454,8 @@ ISBN_database_record = {
 
 def select_from_database(table_id: int) -> None:
     selected_book = ISBN_database_record.get(table_id)
-    print(f"Title: {selected_book['title']}\n"
+    print(f"ID: {selected_book['ID']}\n"
+          f"Title: {selected_book['title']}\n"
           f"Year: {selected_book['year']}\n"
           f"Author: {selected_book['author']}\n"
           f"Genre: {selected_book['genre']}.")
@@ -458,9 +466,9 @@ if __name__ == '__main__':
     library = BookLibrary()
     current_user = None
 
-    the_witcher = book_director.add_new_book("The Witcher", 2025, "Sapkowski", "Fantasy")
-    harry_potter = book_director.add_new_book("Harry Potter", 1997, "J.K. Rowling", "Fantasy")
-    narnia = book_director.add_new_book("Narnia", 1997, "XXX", "Fantasy")
+    the_witcher = book_director.add_new_book(4, "The Witcher", 2025, "Sapkowski", "Fantasy")
+    harry_potter = book_director.add_new_book(5, "Harry Potter", 1997, "J.K. Rowling", "Fantasy")
+    narnia = book_director.add_new_book(6, "Narnia", 1997, "XXX", "Fantasy")
 
     library.add_book(the_witcher)
     library.add_book(harry_potter)
@@ -487,10 +495,42 @@ if __name__ == '__main__':
                     connection = Login(login, password)
                     current_user = user
 
-        else:
+        elif user.role == "Student":
             print("Możliwe operacje:\n"
-                  "'show_books': Wyświetl dostępne książki\n"
-                  "'logout': Wyloguj")
+                  "'show_books': Wyświetl dostępne książki.\n"
+                  "'borrow_book': Wypożycz książkę.\n"
+                  "'show_borrowed_books': Wyświetl swoje wypożyczone książki.\n"
+                  "'return_book': Zwróć wypożyczoną książkę.\n"
+                  "'is_book_available': Sprawdź, czy książka jest dostępna do wypożyczenia.\n"
+                  "'reserve_book': Zarezerwuj niedostępną ksiązkę.\n"
+                  "'show_reserved_books': Wyświetl swoje zarezerwowane książki.\n"
+                  "'show_history': Wyświetl historię operacji.\n"
+                  "'undo_operation': Cofnij ostatnią operację.\n"
+                  "'select_from_database': Pobierz dane książki z bazy zewnętrznej.\n"
+                  "'logout': Wyloguj.")
+            operation = input("Podaj operację, jaką chcesz wykonać.")
+
+            if operation == "show_books":
+                library.show_books()
+
+            elif operation == "show_borrowed_books":
+                user.show_borrowed_books()
+
+            elif operation == "select_from_database":
+                id = int(input("Podaj ID książki z bazy zewnętrznej."))
+                select_from_database(id)
+
+            elif operation == "logout":
+                print("Użytkownik wylogowany.")
+                current_user = None
+
+        elif user.role == "Professor":
+            print("Możliwe operacje:\n"
+                  "'show_books': Wyświetl dostępne książki.\n"
+                  "'add_book': Dodaj książkę.\n"
+                  "'delete_book': Usuń książkę.\n"
+                  "'edit_book': Edytuj książkę.\n"
+                  "'logout': Wyloguj.")
             operation = input("Podaj operację, jaką chcesz wykonać.")
 
             if operation == "show_books":
