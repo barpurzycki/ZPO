@@ -464,6 +464,7 @@ if __name__ == '__main__':
     user_director = UserDirector()
     book_director = BookDirector()
     library = BookLibrary()
+    history = History()
     current_user = None
 
     the_witcher = book_director.add_new_book(4, "The Witcher", 2025, "Sapkowski", "Fantasy")
@@ -515,6 +516,12 @@ if __name__ == '__main__':
 
             elif operation == "show_borrowed_books":
                 user.show_borrowed_books()
+
+            elif operation == "show_reserved_books":
+                user.show_reserved_books()
+
+            elif operation == "show_history":
+                history.show_history()
 
             elif operation == "select_from_database":
                 id = int(input("Podaj ID książki z bazy zewnętrznej."))
