@@ -54,7 +54,7 @@ class Manager(Observer):
 
 
 #Klasa User - Budowniczy
-class User():
+class User:
     users_info = {}
     borrowed_books = []
     reserved_books = []
@@ -190,7 +190,9 @@ class StudentBuilder(UserBuilder):
         return self
 
     def permissions_set(self):
-        self.user.permissions = ["view_content", "borrow_book", "reserve_book", "return_book"]
+        self.user.permissions = ["show_books", "borrow_book", "show_borrowed_books", "reserve_book", "return_book",
+                                 "is_book_available", "show_reserved_books", "show_history", "undo_operation",
+                                 "select_from_database"]
         return self
 
 
@@ -200,7 +202,7 @@ class ProfessorBuilder(UserBuilder):
         return self
 
     def permissions_set(self):
-        self.user.permissions = ["view_content", "add_book", "delete_book", "edit_book"]
+        self.user.permissions = ["show_books", "add_book", "delete_book", "edit_book"]
         return self
 
 
@@ -327,7 +329,7 @@ class BookDirector:
 
         return self.builder.get_book()
 
-#Podklasy do Fasady
+#Zbiór klas używany do Fasady
 class BookList:
     def __init__(self) -> None:
         self.books = []
@@ -364,7 +366,7 @@ class BookShow:
         for book in self.book_list.books:
             print(book)
 
-#Klasa BookLibrary - Fasada spinająca podklasy zarządzania książkami
+#Klasa BookLibrary - Fasada spinająca zbiór klas zarządzania książkami
 class BookLibrary:
     def __init__(self) -> None:
         self.book_list = BookList()
@@ -578,7 +580,7 @@ if __name__ == '__main__':
                 input_title = input("Podaj tytuł książki")
                 input_year = input("Podaj rok wydania książki")
                 input_author = input("Podaj autora książki")
-                input_genre = input("Podaj gatunek książki")
+                input_genre = input("Podaj gatunek książki (Fantasy/ Drama/ Comedy/ Romance)")
                 book = book_director.add_new_book(input_title, input_year, input_author, input_genre)
                 library.add_book(book)
 
@@ -590,7 +592,7 @@ if __name__ == '__main__':
             if operation == "edit_book":
                 book_title = input("Wpisz tytuł książki")
                 book = get_book_title(book_title, library.book_list.books)
-                property = input("Wpisz, co chcesz edytować (title, year, author, genre)")
+                property = input("Wpisz, co chcesz edytować (title/ year/ author/ genre)")
                 value = input("Wpisz wartość")
                 library.edit_book(book, property, value)
 
